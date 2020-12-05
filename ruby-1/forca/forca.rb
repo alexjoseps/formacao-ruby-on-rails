@@ -1,7 +1,8 @@
 require_relative 'ui'
+require_relative 'rank'
 
 def joga(nome)
-    palavra_secreta = sortei_palavra_secreta
+    palavra_secreta = sorteia_palavra_secreta
 
     erros = 0
     chutes = []
@@ -38,6 +39,7 @@ def joga(nome)
     end
 
     avisa_quantidade_de_pontos pontos
+    pontos
 end
 
 def pede_um_chute_valido chutes, erros, palavra_mascarada
@@ -65,11 +67,33 @@ def gerar_palavra_mascarada palavra_secreta, chutes
     palavra_mascarada
 end
 
+def sorteia_palavra_secreta
+    avisa_escolhendo_palavra
+    texto = File.read("dicionario.txt")
+    todas_as_palavras = texto.split("\n")
+    numero_aleatorio = rand(todas_as_palavras.size)
+    palavra_secreta = todas_as_palavras[numero_aleatorio].downcase
+    avisa_palavra_escolhida palavra_secreta
+    palavra_secreta
+end
+
 def jogo_da_forca
     nome = dar_boas_vindas
+    pontos_totais = 0
+
+    campeao_atual = ler_rank
+
+    if campeao_atual.any?
+        avisa_campeao_atual campeao_atual
+    end
 
     loop do
-        joga nome
+        pontos_totais += joga nome
+        avisa_pontos_totais pontos_totais
+
+        if campeao_atual[1].to_i < pontos_totais
+            salvar_rank nome, pontos_totais
+        end
 
         break if nao_quer_jogar?
     end

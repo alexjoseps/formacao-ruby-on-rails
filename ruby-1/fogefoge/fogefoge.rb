@@ -19,16 +19,18 @@ end
 
 def definir_nova_posicao(heroi, direcao)
     heroi = heroi.dup
-    case direcao
-    when 'W'
-        heroi[0] -= 1
-    when 'S'
-        heroi[0] += 1
-    when 'A'
-        heroi[1] -= 1
-    when 'D'
-        heroi[1] += 1
-    end
+    movimentos = {
+        "W" => [-1, 0],
+        "S" => [+1, 0],
+        "A" => [0, -1],
+        "D" => [0, +1]
+    }
+    movimento = movimentos[direcao]
+
+    return heroi if movimento.nil?
+
+    heroi[0] += movimento[0]
+    heroi[1] += movimento[1]
     heroi
 end
 
@@ -37,13 +39,38 @@ def posicao_invalida?(mapa, posicao)
     colunas = mapa[0].size
     ultrapassou_limite_linhas = posicao[0] < 0 || posicao[0] >= linhas
     ultrapassou_limite_colunas = posicao[1] < 0 || posicao[1] >= colunas
-    atingiu_uma_parade = mapa[posicao[0]][posicao[1]] == 'X'
+    valor_posicao = mapa[posicao[0]][posicao[1]]
+    atingiu_parede = valor_posicao == 'X'
+    atingiu_fantasma = valor_posicao == 'F'
 
-    ultrapassou_limite_linhas || ultrapassou_limite_colunas || atingiu_uma_parade
+    ultrapassou_limites = ultrapassou_limite_linhas || ultrapassou_limite_colunas
+
+    ultrapassou_limites || atingiu_parede || atingiu_fantasma
+end
+
+def movimentar_fantasmas(mapa)
+    fantasma = 'F'
+    mapa.each_with_index { |linha_atual, linha|
+        linha_atual.chars.each_with_index {|caracter, coluna|
+            eh_fantamas = caracter == fantasma
+            if eh_fantamas
+                move_fantasma mapa, linha, coluna
+            end
+        }
+    }
+end
+
+def move_fantasma(mapa, linha, coluna)
+    posicao = [linha, coluna+1]
+
+    return if posicao_invalida? mapa, posicao
+
+    mapa[linha][coluna] = ' '
+    mapa[posicao[0]][posicao[1]] = 'F'
 end
 
 def joga(nome)
-    mapa = ler_mapa 1
+    mapa = ler_mapa 2
 
     while true
         desenha mapa
@@ -61,6 +88,8 @@ def joga(nome)
 
         mapa[heroi[0]][heroi[1]] = ' '
         mapa[nova_posicao[0]][nova_posicao[1]] = 'H'
+
+        movimentar_fantasmas mapa
     end
 end
 

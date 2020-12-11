@@ -15,3 +15,8 @@ end
 def desenha(mapa)
     puts mapa
 end
+
+def fim_de_jogo
+    puts "\n\n\n\n"
+    puts "Você perdeu o jogo"
+end

@@ -15,6 +15,8 @@ def encontrar_heroi(mapa)
             return [linha, coluna_do_heroi]
         end
     end
+
+    return nil
 end
 
 def definir_nova_posicao(heroi, direcao)
@@ -39,34 +41,58 @@ def posicao_invalida?(mapa, posicao)
     colunas = mapa[0].size
     ultrapassou_limite_linhas = posicao[0] < 0 || posicao[0] >= linhas
     ultrapassou_limite_colunas = posicao[1] < 0 || posicao[1] >= colunas
+
+    return true if ultrapassou_limite_linhas || ultrapassou_limite_colunas
+
     valor_posicao = mapa[posicao[0]][posicao[1]]
     atingiu_parede = valor_posicao == 'X'
     atingiu_fantasma = valor_posicao == 'F'
 
-    ultrapassou_limites = ultrapassou_limite_linhas || ultrapassou_limite_colunas
-
-    ultrapassou_limites || atingiu_parede || atingiu_fantasma
+    return true if atingiu_parede || atingiu_fantasma
 end
 
 def movimentar_fantasmas(mapa)
     fantasma = 'F'
+    novo_mapa = copia_mapa mapa
     mapa.each_with_index { |linha_atual, linha|
         linha_atual.chars.each_with_index {|caracter, coluna|
             eh_fantamas = caracter == fantasma
             if eh_fantamas
-                move_fantasma mapa, linha, coluna
+                move_fantasma mapa, novo_mapa, linha, coluna
             end
         }
     }
+    novo_mapa
 end
 
-def move_fantasma(mapa, linha, coluna)
-    posicao = [linha, coluna+1]
+def move_fantasma(mapa, novo_mapa, linha, coluna)
+    posicoes = posicoes_validas_a_partir_de mapa, novo_mapa, [linha, coluna]
 
-    return if posicao_invalida? mapa, posicao
+    return if posicoes.empty?
+
+    aletorio = rand posicoes.size
+    posicao = posicoes[aletorio]
 
     mapa[linha][coluna] = ' '
-    mapa[posicao[0]][posicao[1]] = 'F'
+    novo_mapa[posicao[0]][posicao[1]] = 'F'
+end
+
+def soma(vetor1, vetor2)
+    [vetor1[0] + vetor2[0], vetor1[1] + vetor2[1]]
+end
+
+def posicoes_validas_a_partir_de(mapa, novo_mapa, posicao)
+    posicoes = []
+    movimentos = [[-1, 0], [0, +1], [+1, 0], [0, -1]]
+    movimentos.each {|movimento|
+        nova_posicao = soma posicao, movimento
+        posicoes << nova_posicao unless posicao_invalida?(mapa, nova_posicao) && posicao_invalida?(novo_mapa, nova_posicao)
+    }
+    posicoes
+end
+
+def copia_mapa(mapa)
+    novo_mapa = mapa.join('\n').tr('F', ' ').split('\n')
 end
 
 def joga(nome)
@@ -89,7 +115,13 @@ def joga(nome)
         mapa[heroi[0]][heroi[1]] = ' '
         mapa[nova_posicao[0]][nova_posicao[1]] = 'H'
 
-        movimentar_fantasmas mapa
+        mapa = movimentar_fantasmas mapa
+
+        nao_encontrou_heroi = encontrar_heroi(mapa).nil?
+        if nao_encontrou_heroi
+            fim_de_jogo
+            break
+        end
     end
 end
 

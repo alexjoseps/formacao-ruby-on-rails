@@ -1,4 +1,5 @@
 require_relative 'ui'
+require_relative 'heroi'
 
 def ler_mapa(numero)
     arquivo = "mapas/mapa#{numero}.txt"
@@ -12,28 +13,14 @@ def encontrar_heroi(mapa)
     mapa.each_with_index do |linha_atual, linha|
         coluna_do_heroi = linha_atual.index heroi
         if coluna_do_heroi
-            return [linha, coluna_do_heroi]
+            heroi = Heroi.new
+            heroi.linha  = linha
+            heroi.coluna = coluna_do_heroi
+            return heroi
         end
     end
 
     return nil
-end
-
-def definir_nova_posicao(heroi, direcao)
-    heroi = heroi.dup
-    movimentos = {
-        "W" => [-1, 0],
-        "S" => [+1, 0],
-        "A" => [0, -1],
-        "D" => [0, +1]
-    }
-    movimento = movimentos[direcao]
-
-    return heroi if movimento.nil?
-
-    heroi[0] += movimento[0]
-    heroi[1] += movimento[1]
-    heroi
 end
 
 def posicao_invalida?(mapa, posicao)
@@ -102,18 +89,15 @@ def joga(nome)
         desenha mapa
         direcao = pede_direcao
         heroi = encontrar_heroi mapa
-        nova_posicao = definir_nova_posicao heroi, direcao
+        nova_posicao = heroi.definir_nova_posicao direcao
 
-        if posicao_invalida? mapa, nova_posicao
+        if posicao_invalida? mapa, nova_posicao.to_array
             puts "Não é permitido se movimentar nessa direção"
             next
         end
 
-        puts "Antes: #{heroi}"
-        puts "Depois: #{nova_posicao}"
-
-        mapa[heroi[0]][heroi[1]] = ' '
-        mapa[nova_posicao[0]][nova_posicao[1]] = 'H'
+        heroi.remove_do mapa
+        nova_posicao.adiciona_no mapa
 
         mapa = movimentar_fantasmas mapa
 

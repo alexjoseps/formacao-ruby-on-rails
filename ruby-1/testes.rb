@@ -85,3 +85,9 @@
 
 # uri = URI.parse('https://www.casadocodigo.com.br');
 # Net::HTTP.get_print(uri);
+
+# bemvindo = -> (nome) {
+#     puts "Bem vindo #{nome}!!!"
+# }
+
+# bemvindo.('Alex')

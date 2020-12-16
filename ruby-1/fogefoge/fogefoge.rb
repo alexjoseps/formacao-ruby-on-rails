@@ -82,8 +82,28 @@ def copia_mapa(mapa)
     novo_mapa = mapa.join('\n').tr('F', ' ').split('\n')
 end
 
+def explodir(mapa, posicao, quantidade)
+    return if quantidade == 0
+
+    executa_explosao mapa, posicao.andar_para_direita, quantidade
+    executa_explosao mapa, posicao.andar_para_cima, quantidade
+    executa_explosao mapa, posicao.andar_para_esquerda, quantidade
+    executa_explosao mapa, posicao.andar_para_baixo, quantidade
+end
+
+def executa_explosao(mapa, posicao, quantidade)
+    return if mapa[posicao.linha][posicao.coluna] == 'X'
+
+    posicao.remove_do mapa
+    explodir mapa, posicao, (quantidade - 1)
+end
+
+def encontrou_bomba?(mapa, posicao)
+    mapa[posicao.linha][posicao.coluna] == '*'
+end
+
 def joga(nome)
-    mapa = ler_mapa 2
+    mapa = ler_mapa 4
 
     while true
         desenha mapa
@@ -97,6 +117,11 @@ def joga(nome)
         end
 
         heroi.remove_do mapa
+
+        if encontrou_bomba? mapa, nova_posicao
+            explodir mapa, nova_posicao, 4
+        end
+
         nova_posicao.adiciona_no mapa
 
         mapa = movimentar_fantasmas mapa

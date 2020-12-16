@@ -29,4 +29,20 @@ class Heroi
     def remove_do(mapa)
         mapa[linha][coluna] = ' '
     end
+
+    def andar_para_direita
+        definir_nova_posicao 'D'
+    end
+
+    def andar_para_esquerda
+        definir_nova_posicao 'A'
+    end
+
+    def andar_para_cima
+        definir_nova_posicao 'W'
+    end
+
+    def andar_para_baixo
+        definir_nova_posicao 'S'
+    end
 end

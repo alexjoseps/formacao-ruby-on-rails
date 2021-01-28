@@ -39,28 +39,20 @@ class Estoque
         @livros.maximo_necessario
     end
 
-    def livro_que_mais_vendeu_por_titulo
-        que_mais_vendeu_por('livro', &:titulo)
-    end
+    def method_missing(name)
+        matcher = name.to_s.match "(.+)_que_mais_vendeu_por_(.+)"
 
-    def livro_que_mais_vendeu_por_ano
-        que_mais_vendeu_por('livro', &:ano_lancamento)
-    end
-
-    def livro_que_mais_vendeu_por_editora
-        que_mais_vendeu_por('livro', &:editora)
-    end
-
-    def revista_que_mais_vendeu_por_titulo
-        que_mais_vendeu_por('revista', &:titulo)
+        if matcher
+           tipo = matcher[1]
+           campo = matcher[2].to_sym
+           que_mais_vendeu_por(tipo, &campo)
+        else
+           super
+        end 
      end
-  
-     def revista_que_mais_vendeu_por_ano
-        que_mais_vendeu_por('revista', &:ano_lancamento)
-     end
-  
-     def revista_que_mais_vendeu_por_editora
-        que_mais_vendeu_por('revista', &:editora)
+
+     def respond_to?(name)
+        name.to_s.match("(.+)_que_mais_vendeu_por_(.+)") || super
      end
 
      private

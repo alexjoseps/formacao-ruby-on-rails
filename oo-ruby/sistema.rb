@@ -89,15 +89,19 @@ arquitetura = Livro.new("Introdução À Arquitetura e Design de Software", 70, 
 programmer = Livro.new("The Pragmatic Programmer", 100, 1999, true, "editora", "livro")
 ruby = Livro.new("Programming Ruby", 100, 2004, true, "editora", "livro")
 revistona = Livro.new("Revista de Ruby", 10, 2012, true, "Revistas", "revista")
+ebook_arquitetura = Livro.new("Introdução À Arquitetura e Design de Software", 70, 2011, true, "editora", "ebook")
 
 estoque = Estoque.new
 
-estoque << algoritmos << algoritmos << arquitetura << programmer << ruby << ruby << ruby << revistona << revistona
+estoque << algoritmos << algoritmos << arquitetura << programmer << ruby << ruby << ruby << revistona << revistona << ebook_arquitetura << ebook_arquitetura
 estoque.vende ruby
 # estoque.vende ruby
 # estoque.vende ruby
 estoque.vende algoritmos
 estoque.vende algoritmos
 estoque.vende revistona
-puts estoque.livro_que_mais_vendeu_por_titulo.titulo
-puts estoque.revista_que_mais_vendeu_por_titulo.titulo
+estoque.vende ebook_arquitetura
+p estoque.livro_que_mais_vendeu_por_titulo.titulo
+p estoque.revista_que_mais_vendeu_por_titulo.titulo
+p estoque.ebook_que_mais_vendeu_por_titulo.titulo
+p estoque.respond_to? :ebook_que_mais_vendeu_por_titulo

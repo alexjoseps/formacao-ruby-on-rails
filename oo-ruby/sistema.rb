@@ -1,4 +1,6 @@
 require_relative 'livro'
+require_relative 'revista'
+require_relative 'ebook'
 require_relative 'estoque'
 
 # module Conversor
@@ -84,12 +86,12 @@ end
 
 # puts livros_computacao.length
 
-algoritmos = Livro.new("Algoritmos", 100, 1998, true, "editora", "livro")
-arquitetura = Livro.new("Introdução À Arquitetura e Design de Software", 70, 2011, true, "editora", "livro")
-programmer = Livro.new("The Pragmatic Programmer", 100, 1999, true, "editora", "livro")
-ruby = Livro.new("Programming Ruby", 100, 2004, true, "editora", "livro")
-revistona = Livro.new("Revista de Ruby", 10, 2012, true, "Revistas", "revista")
-ebook_arquitetura = Livro.new("Introdução À Arquitetura e Design de Software", 70, 2011, true, "editora", "ebook")
+algoritmos = Livro.new("Algoritmos", 100, 1998, true, true, "editora")
+arquitetura = Livro.new("Introdução À Arquitetura e Design de Software", 70, 2011, true, true, "editora")
+programmer = Livro.new("The Pragmatic Programmer", 100, 1999, true, true, "editora")
+ruby = Livro.new("Programming Ruby", 100, 2004, true, true, "")
+revistona = Revista.new("Revista de Ruby 3", 10, 2012, true, 3, "Revistas")
+ebook_arquitetura = EBook.new("Introdução À Arquitetura e Design de Software", 70, 2011, "editora")
 
 estoque = Estoque.new
 
